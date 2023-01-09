@@ -27,9 +27,16 @@ public class Medidor_controller {
     }
 
     @GetMapping("/medidor/cont")
-    public List<Medidor_dto> getCont(String dia, String periodo) {
-        // return logica.daily(getMedidores(), dia);
-        // return logica.fechas_registradas(getMedidores());
-        return logica.weekly("2022-10-24", getMedidores());
+    public List<Medidor_dto> getCont(String date, String periodo) {
+
+        if (periodo.equalsIgnoreCase("daily")) {
+            return logica.daily(getMedidores(), date);
+        }
+        if (periodo.equalsIgnoreCase("weekly")) {
+            return logica.weekly(date, getMedidores());
+        } else {
+            return logica.monthly(null, getMedidores());
+        }
+
     }
 }

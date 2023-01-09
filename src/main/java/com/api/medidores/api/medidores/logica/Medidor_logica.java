@@ -19,13 +19,11 @@ public class Medidor_logica {
             fecha = splited[1] + "-" + convertir_mes(dia_mes[0]) + "-" + dia_mes[1];
             String date = fecha.replace(" ", "");
 
-            if (date.equalsIgnoreCase("2022-10-12")) {
+            if (date.equalsIgnoreCase(dia)) {
                 Medidor_dto temp = new Medidor_dto();
                 temp.setMeter_date(data.get(i).getMeter_date());
                 temp.setValue(data.get(i).getValue());
                 list.add(temp);
-            } else {
-                break;
             }
         }
 
@@ -36,16 +34,48 @@ public class Medidor_logica {
         List<String> fechas = fechas_registradas(data);
         boolean start = false;
         List<Medidor_dto> list = new ArrayList<>();
+        int cont = 0;
 
         for (int i = 0; i < fechas.size(); i++) {
             if (fechas.get(i).equalsIgnoreCase(dia)) {
                 start = true;
             }
             if (start) {
+                cont++;
+                if (cont <= 7) {
+                    Medidor_dto temp = new Medidor_dto();
+                    temp.setMeter_date(fechas.get(i));
+                    temp.setValue(ultimo_val(daily(data, fechas.get(i))));
+                    list.add(temp);
+                } else {
+                    break;
+                }
+
+            }
+        }
+
+        return list;
+    }
+
+    public List<Medidor_dto> monthly(String dia, List<Medidor> data) {
+        List<String> fechas = fechas_registradas(data);
+        boolean start = false;
+        List<Medidor_dto> list = new ArrayList<>();
+        if (dia == null) {
+            dia = fechas.get(0);
+        }
+
+        for (int i = 0; i < fechas.size(); i++) {
+            if (fechas.get(i).equalsIgnoreCase(dia)) {
+                start = true;
+            }
+            if (start) {
+
                 Medidor_dto temp = new Medidor_dto();
                 temp.setMeter_date(fechas.get(i));
-                temp.setValue(sumar_value(daily(data, fechas.get(i))));
+                temp.setValue(ultimo_val(daily(data, fechas.get(i))));
                 list.add(temp);
+
             }
         }
 
@@ -76,12 +106,8 @@ public class Medidor_logica {
         return fechas;
     }
 
-    public double sumar_value(List<Medidor_dto> list) {
-        double acum = 0;
-        for (int i = 0; i < list.size(); i++) {
-            acum = acum + list.get(i).getValue();
-        }
-        return acum;
+    public double ultimo_val(List<Medidor_dto> list) {
+        return list.get(list.size() - 1).getValue();
     }
 
     public String convertir_mes(String mes) {
