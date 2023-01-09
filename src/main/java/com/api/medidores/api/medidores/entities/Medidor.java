@@ -1,10 +1,12 @@
 package com.api.medidores.api.medidores.entities;
 
-import org.hibernate.grammars.hql.HqlParser.DatetimeFieldContext;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
@@ -12,15 +14,29 @@ import jakarta.persistence.Table;
 @EntityListeners(AuditingEntityListener.class)
 public class Medidor {
 
-    private DatetimeFieldContext meter_date;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String meter_date;
 
     private Double value;
 
-    public void setMeter_date(DatetimeFieldContext meter_date) {
+    private Long meter_id;
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setMeter_date(String meter_date) {
         this.meter_date = meter_date;
     }
 
-    public DatetimeFieldContext getMeter_date() {
+    public String getMeter_date() {
         return meter_date;
     }
 
@@ -30,6 +46,14 @@ public class Medidor {
 
     public Double getValue() {
         return value;
+    }
+
+    public void setMeter_id(Long meter_id) {
+        this.meter_id = meter_id;
+    }
+
+    public Long getMeter_id() {
+        return meter_id;
     }
 
 }
